@@ -27,12 +27,19 @@ def keyPressed(event, data):
         data.currNote = getNextNote(data, -1)
     elif event.keysym == "Right":
         data.currNote = getNextNote(data, 1)
+    elif event.keysym == "Delete":
+        dur = data.currNote.getDuration()
+        pitch = 0
+        # gets the rest image
+        im = getNewImage(dur, pitch)
+        data.currNote = Note(dur, im, pitch)
 
 def timerFired(data):
     pass
 
 def redrawAll(canvas, data):
     canvas.create_rectangle(0,0,data.width,data.height, fill = "cornsilk", width = 0)
+    drawStaff(canvas, data, 2)
 
 
 ### HELPER FUNCTIONS ###
@@ -86,6 +93,23 @@ def getNextNote(data, d):
             innerNote += 1
         return (measure, innerNote)
     return note
+
+
+def getNewImage(dur, pitch):
+    if pitch == 0:
+        pass
+        # get image of rest
+    else:
+        pass
+        # get image of note with appropriate duration
+    return 42
+
+
+def drawStaff(canvas, data, x):
+    for j in range(x):
+        for i in range(5):
+            y = 40 + (i*20) + (j*200)
+            canvas.create_line(10, y, data.width-10, y, width = 5)
 
 
 def isClicked(a,b,x,y,r):
