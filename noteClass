@@ -6,3 +6,10 @@ class Note(object):
     def playNote(self):
         pass
         # play audio file *pitch* for self.duration time
+    # getters and setters
+    def getPitch(self):
+        return self.pitch
+    def setPitch(self, p):
+        self.pitch = p
+    def getDuration(self):
+        return self.duration
