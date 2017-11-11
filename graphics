@@ -1,0 +1,149 @@
+from tkinter import *
+import math, noteClass
+
+def init(data):
+    data.staff = []     # ragged 2D list
+    data.pitches = pitchesSetup()
+    data.noteMenu = noteMenuSetup()
+    data.currNote = (-1,-1)  # index of currently selected note in staff
+
+def mousePressed(event, data):
+    pass
+
+
+def keyPressed(event, data):
+    note = data.staff[data.currNote]
+    if event.keysym == "Up":
+        pitch = data.pitches.index(note.getPitch()) + 1
+        if pitch >= 88:   pitch -= 1  # 88: number of keys on a keyboard
+        pitch = data.pitches[pitch]
+        note.setPitch(pitch)
+    elif event.keysym == "Down":    
+        pitch = data.pitches.index(note.getPitch()) - 1
+        if pitch < 0:   pitch += 1
+        pitch = data.pitches[pitch]
+        note.setPitch(pitch)
+    elif event.keysym == "Left":
+        data.currNote = getNextNote(data, -1)
+    elif event.keysym == "Right":
+        data.currNote = getNextNote(data, 1)
+
+def timerFired(data):
+    pass
+
+def redrawAll(canvas, data):
+    canvas.create_rectangle(0,0,data.width,data.height, fill = "cornsilk", width = 0)
+
+
+### HELPER FUNCTIONS ###
+
+def pitchesSetup():
+    pitches = []
+    letters, numbers = ['C','D','E','F','G','A','B'], [0,1,2,3,4,5,6,7,8]
+    l,n = 5,0
+    for i in range(88):
+        # resetting after each octave
+        if l >= len(letters):
+            n += 1
+            l = 0
+        # checking for black keys: saving them as sharps(#)
+        sharps = set(['C','D','F','G','A'])
+        if len(pitches) > 0 and pitches[len(pitches)-1][0] in sharps and pitches[len(pitches)-1][1] != "#":
+            l -= 1
+            pitch = letters[l] + "#" + str(numbers[n])
+        # checking for white keys
+        else:
+            pitch = letters[l] + str(numbers[n])
+        l += 1
+        pitches.append(pitch)
+    return pitches
+
+
+def noteMenuSetup():
+    return []
+    # list of the image files (whole note, half note, etc) to be shown
+
+
+def getNextNote(data, d):
+    note = data.currNote
+    measure, innerNote = note[0], note[1]
+    if measure == 0 and innerNote == 0:
+        return note
+    if d < 0:
+        if measure > 0 and innerNote == 0:
+            measure -= 1
+            innerNote = (len(data.staff[measure])-1)
+        else:
+            innerNote -= 1
+        return (measure, innerNote)
+    if d > 0:
+        if measure == len(staff)-1 and innerNote == len(staff[measure])-1:
+            return note
+        elif measure < len(staff)-1 and innerNote == len(staff[measure])-1:
+            measure += 1
+            innerNote = 0
+        else:
+            innerNote += 1
+        return (measure, innerNote)
+    return note
+
+
+def isClicked(a,b,x,y,r):
+    # a,b: mouse coordinates. x,y: center of the item. r: radius/size of item
+    distX = (a,x)**2
+    distY = (b,y)**2
+    dist = (distX + distY)**0.5
+    if dist <= radius:  return True
+    else:   return False
+    
+
+
+##########################################################
+### STANDARD RUN FUNCTION ################################
+##########################################################
+
+def run(width=300, height=300):
+    def redrawAllWrapper(canvas, data):
+        canvas.delete(ALL)
+        canvas.create_rectangle(0, 0, data.width, data.height,
+                                fill='white', width=0)
+        redrawAll(canvas, data)
+        canvas.update()    
+
+    def mousePressedWrapper(event, canvas, data):
+        mousePressed(event, data)
+        redrawAllWrapper(canvas, data)
+
+    def keyPressedWrapper(event, canvas, data):
+        keyPressed(event, data)
+        redrawAllWrapper(canvas, data)
+
+    def timerFiredWrapper(canvas, data):
+        timerFired(data)
+        redrawAllWrapper(canvas, data)
+        # pause, then call timerFired again
+        canvas.after(data.timerDelay, timerFiredWrapper, canvas, data)
+    # Set up data and call init
+    class Struct(object): pass
+    data = Struct()
+    data.width = width
+    data.height = height
+    data.timerDelay = 100 # milliseconds
+    init(data)
+    # create the root and the canvas
+    root = Tk()
+    canvas = Canvas(root, width=data.width, height=data.height)
+    canvas.pack()
+    # set up events
+    root.bind("<Button-1>", lambda event:
+                            mousePressedWrapper(event, canvas, data))
+    root.bind("<Key>", lambda event:
+                            keyPressedWrapper(event, canvas, data))
+    timerFiredWrapper(canvas, data)
+    # and launch the app
+    root.mainloop()  # blocks until window is closed
+    print("bye!")
+
+run(600, 400)
+
+
