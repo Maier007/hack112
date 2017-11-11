@@ -1,0 +1,8 @@
+class Note(object):
+    def __init__(self, duration, pitch="C5", image):
+        self.duration = duration
+        self.pitch = pitch
+        self.image = image
+    def playNote(self):
+        pass
+        # play audio file *pitch* for self.duration time
