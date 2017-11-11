@@ -14,17 +14,17 @@ def mousePressed(event, data):
 
 def keyPressed(event, data):
     if data.mode == "Compose":
-        note = data.staff[data.currNote]
+        note = data.staff[data.currNote[0]][data.currNote[1]]
         if event.keysym == "Up":
             pitch = data.pitches.index(note.getPitch()) + 1
             if pitch >= 88:   pitch -= 1  # 88: number of keys on a keyboard
             pitch = data.pitches[pitch]
-            note.setPitch(pitch)
+            note.pitch(pitch)
         elif event.keysym == "Down":    
             pitch = data.pitches.index(note.getPitch()) - 1
             if pitch < 0:   pitch += 1
             pitch = data.pitches[pitch]
-            note.setPitch(pitch)
+            note.pitch(pitch)
         elif event.keysym == "Left":
             data.currNote = getNextNote(data, -1)
         elif event.keysym == "Right":
@@ -87,10 +87,10 @@ def getNextNote(data, d):
         return note
     if d < 0:
         if measure > 0 and innerNote == 0:
-            measure -= 1
+            measure += 1*d
             innerNote = (len(data.staff[measure])-1)
         else:
-            innerNote -= 1
+            innerNote += 1*d
         return (measure, innerNote)
     if d > 0:
         if measure == len(staff)-1 and innerNote == len(staff[measure])-1:
@@ -99,7 +99,7 @@ def getNextNote(data, d):
             measure += 1
             innerNote = 0
         else:
-            innerNote += 1
+            innerNote += 1*d
         return (measure, innerNote)
     return note
 
