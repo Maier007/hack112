@@ -1,18 +1,19 @@
 import midi
 
+#SPECIFY WHICHEVER NOTE (duration) YOU WANT
+#DO NOT USE THE *NOTE* CLASS ALONE
 class Note(object):
-    fullNoteDuration = 200
+    fullNoteDuration = 500 
     def __init__(self, pitch=midi.C_5,dot=False):
-        self.duration = duration
         self.pitch = pitch
         #self.image = image
-        self.loudness = 100
+        self.loudness = 80
         self.dot = dot
     def playNote(self, track):
         # play audio file *pitch* for self.duration time
         # if the note is dotted, the duration is extended by half
         if self.dot:
-            duration = self.duration*1.5
+            duration = int(self.duration*1.5)
         else:
             duration = self.duration
         on = midi.NoteOnEvent(tick=0, velocity=self.loudness, pitch=self.pitch)
@@ -20,48 +21,54 @@ class Note(object):
         off = midi.NoteOffEvent(tick=duration, pitch=self.pitch)
         track.append(off)
 
-"""
-pattern = midi.Pattern()
-track = midi.Track()
-pattern.append(track)
-noteList = []
-noteList.append(Note(200,0,midi.C_5))
-noteList.append(Note(200,0,midi.D_5))
-noteList.append(Note(200,0,midi.E_5))
-noteList.append(Note(200,0,midi.F_5))
-noteList.append(Note(200,0,midi.G_5))
-for note in noteList:
-    note.playNote(track)
-eot = midi.EndOfTrackEvent(tick=1)
-track.append(eot)
-midi.write_midifile("testNoteClass.mid", pattern)
-"""
 
 class FullNote(Note):
     duration = Note.fullNoteDuration
 
 class HalfNote(Note):
-    duration = Note.fullNoteDuration/2
+    duration = Note.fullNoteDuration//2
     
 class QuarterNote(Note):
-    duration = Note.fullNoteDuration/4
+    duration = Note.fullNoteDuration//4
     
 class EighthNote(Note):
-    duration = Note.fullNoteDuration/8
+    duration = Note.fullNoteDuration//8
     
 class Rest(Note):
     def __init__(self, pitch=midi.C_5, dot=False):
-        super().__init__(self,pitch,dot)
+        super().__init__(pitch,dot)
         self.loudness = 0
         
 class FullRest(Rest):
     duration = Note.fullNoteDuration
 
 class HalfRest(Rest):
-    duration = Note.fullNoteDuration/2
+    duration = Note.fullNoteDuration//2
     
 class QuarterRest(Rest):
-    duration = Note.fullNoteDuration/4
+    duration = Note.fullNoteDuration//4
     
 class EighthRest(Rest):
-    duration = Note.fullNoteDuration/8
+    duration = Note.fullNoteDuration//8
+    
+#Test, this generates a (weird) harmonic minor scale
+pattern = midi.Pattern()
+track = midi.Track()
+pattern.append(track)
+noteList = []
+noteList.append(HalfNote(midi.C_5))
+noteList.append(QuarterNote(midi.D_5))
+noteList.append(HalfNote(midi.Ds_5))
+noteList.append(HalfRest())
+noteList.append(QuarterNote(midi.F_5))
+noteList.append(QuarterNote(midi.G_5))
+noteList.append(QuarterNote(midi.Gs_5))
+noteList.append(QuarterNote(midi.B_5))
+noteList.append(QuarterNote(midi.C_6))
+for note in noteList:
+    print(note.duration)
+    note.playNote(track)
+eot = midi.EndOfTrackEvent(tick=1)
+track.append(eot)
+midi.write_midifile("testNoteClass.mid", pattern)
+
