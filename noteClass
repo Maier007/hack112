@@ -12,6 +12,13 @@ class Note(object):
         track.append(on)
         off = midi.NoteOffEvent(tick=self.duration, pitch=self.pitch)
         track.append(off)
+    # getters and setters
+    def getPitch(self):
+        return self.pitch
+    def setPitch(self, p):
+        self.pitch = p
+    def getDuration(self):
+        return self.duration
 
 """
 pattern = midi.Pattern()
