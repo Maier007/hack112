@@ -21,8 +21,13 @@ class Note(object):
         off = midi.NoteOffEvent(tick=duration, pitch=self.pitch)
         track.append(off)
 
+    def getRest(self):
+        for rest in Rests:
+            if self.duration == rest.duration:
+                return rest(self.dot)
 
-class FullNote(Note):
+
+class WholeNote(Note):
     duration = Note.fullNoteDuration
 
 class HalfNote(Note):
@@ -33,42 +38,48 @@ class QuarterNote(Note):
     
 class EighthNote(Note):
     duration = Note.fullNoteDuration//8
+
     
 class Rest(Note):
-    def __init__(self, pitch=midi.C_5, dot=False):
-        super().__init__(pitch,dot)
+    def __init__(self, dot=False):
+        super().__init__(midi.C_5,dot)
         self.loudness = 0
-        
-class FullRest(Rest):
+
+class WholeRest(Rest):
     duration = Note.fullNoteDuration
+    image = 'whole_rest.png'
 
 class HalfRest(Rest):
     duration = Note.fullNoteDuration//2
+    image = 'half_rest.png'
     
 class QuarterRest(Rest):
     duration = Note.fullNoteDuration//4
+    image = 'quarter_rest.png'
     
 class EighthRest(Rest):
     duration = Note.fullNoteDuration//8
-    
-#Test, this generates a (weird) harmonic minor scale
+    image = 'eighth_rest.png'
+
+Rests = [WholeRest,HalfRest,QuarterRest,EighthRest]
+
+#Test, this generates a harmonic minor scale
+"""
 pattern = midi.Pattern()
 track = midi.Track()
 pattern.append(track)
 noteList = []
-noteList.append(HalfNote(midi.C_5))
-noteList.append(QuarterNote(midi.D_5))
-noteList.append(HalfNote(midi.Ds_5))
-noteList.append(HalfRest())
-noteList.append(QuarterNote(midi.F_5))
-noteList.append(QuarterNote(midi.G_5))
-noteList.append(QuarterNote(midi.Gs_5))
-noteList.append(QuarterNote(midi.B_5))
-noteList.append(QuarterNote(midi.C_6))
+noteList.append(QuarterNote(midi.C_5+1))
+noteList.append(QuarterNote(midi.D_5+1))
+noteList.append(QuarterNote(midi.Eb_5+1))
+noteList.append(QuarterNote(midi.F_5+1))
+noteList.append(QuarterNote(midi.G_5+1))
+noteList.append(QuarterNote(midi.Ab_5+1))
+noteList.append(QuarterNote(midi.B_5+1))
+noteList.append(WholeNote(midi.C_6+1))
 for note in noteList:
-    print(note.duration)
     note.playNote(track)
 eot = midi.EndOfTrackEvent(tick=1)
 track.append(eot)
 midi.write_midifile("testNoteClass.mid", pattern)
-
+"""
