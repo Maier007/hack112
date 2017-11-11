@@ -26,6 +26,9 @@ class Note(object):
             if self.duration == rest.duration:
                 return rest(self.dot)
 
+    def __repr__(self):
+        return str((self.pitch,type(self)))
+
 
 class WholeNote(Note):
     duration = Note.fullNoteDuration
