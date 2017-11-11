@@ -1,26 +1,24 @@
 import midi
 
 class Note(object):
-    def __init__(self, duration, image, pitch="C5"):
+    fullNoteDuration = 200
+    def __init__(self, pitch=midi.C_5,dot=False):
         self.duration = duration
         self.pitch = pitch
-        self.image = image
+        #self.image = image
         self.loudness = 100
+        self.dot = dot
     def playNote(self, track):
         # play audio file *pitch* for self.duration time
+        # if the note is dotted, the duration is extended by half
+        if self.dot:
+            duration = self.duration*1.5
+        else:
+            duration = self.duration
         on = midi.NoteOnEvent(tick=0, velocity=self.loudness, pitch=self.pitch)
         track.append(on)
-        off = midi.NoteOffEvent(tick=self.duration, pitch=self.pitch)
+        off = midi.NoteOffEvent(tick=duration, pitch=self.pitch)
         track.append(off)
-    # getters and setters
-    def getPitch(self):
-        return self.pitch
-    def setPitch(self, p):
-        self.pitch = p
-    def getDuration(self):
-        return self.duration
-    def getImage(self):
-        return self.image
 
 """
 pattern = midi.Pattern()
@@ -38,3 +36,32 @@ eot = midi.EndOfTrackEvent(tick=1)
 track.append(eot)
 midi.write_midifile("testNoteClass.mid", pattern)
 """
+
+class FullNote(Note):
+    duration = Note.fullNoteDuration
+
+class HalfNote(Note):
+    duration = Note.fullNoteDuration/2
+    
+class QuarterNote(Note):
+    duration = Note.fullNoteDuration/4
+    
+class EighthNote(Note):
+    duration = Note.fullNoteDuration/8
+    
+class Rest(Note):
+    def __init__(self, pitch=midi.C_5):
+        super().__init__(self,pitch)
+        self.loudness = 0
+        
+class FullRest(Rest):
+    duration = Note.fullNoteDuration
+
+class HalfRest(Rest):
+    duration = Note.fullNoteDuration/2
+    
+class QuarterRest(Rest):
+    duration = Note.fullNoteDuration/4
+    
+class EighthRest(Rest):
+    duration = Note.fullNoteDuration/8
