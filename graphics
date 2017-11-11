@@ -6,36 +6,45 @@ def init(data):
     data.pitches = pitchesSetup()
     data.noteMenu = noteMenuSetup()
     data.currNote = (-1,-1)  # index of currently selected note in staff
+    data.mode = "Compose"
 
 def mousePressed(event, data):
     pass
 
 
 def keyPressed(event, data):
-    note = data.staff[data.currNote]
-    if event.keysym == "Up":
-        pitch = data.pitches.index(note.getPitch()) + 1
-        if pitch >= 88:   pitch -= 1  # 88: number of keys on a keyboard
-        pitch = data.pitches[pitch]
-        note.setPitch(pitch)
-    elif event.keysym == "Down":    
-        pitch = data.pitches.index(note.getPitch()) - 1
-        if pitch < 0:   pitch += 1
-        pitch = data.pitches[pitch]
-        note.setPitch(pitch)
-    elif event.keysym == "Left":
-        data.currNote = getNextNote(data, -1)
-    elif event.keysym == "Right":
-        data.currNote = getNextNote(data, 1)
-    elif event.keysym == "Delete":
-        dur = data.currNote.getDuration()
-        pitch = 0
-        # gets the rest image
-        im = getNewImage(dur, pitch)
-        data.currNote = Note(dur, im, pitch)
+    if data.mode == "Compose":
+        note = data.staff[data.currNote]
+        if event.keysym == "Up":
+            pitch = data.pitches.index(note.getPitch()) + 1
+            if pitch >= 88:   pitch -= 1  # 88: number of keys on a keyboard
+            pitch = data.pitches[pitch]
+            note.setPitch(pitch)
+        elif event.keysym == "Down":    
+            pitch = data.pitches.index(note.getPitch()) - 1
+            if pitch < 0:   pitch += 1
+            pitch = data.pitches[pitch]
+            note.setPitch(pitch)
+        elif event.keysym == "Left":
+            data.currNote = getNextNote(data, -1)
+        elif event.keysym == "Right":
+            data.currNote = getNextNote(data, 1)
+        elif event.keysym == "Delete":
+            dur = data.currNote.getDuration()
+            pitch = 0
+            # gets the rest image
+            im = getNewImage(dur, pitch)
+            data.currNote = Note(dur, im, pitch)
+        elif event.keysym == "p":
+            data.mode = "Play"
+    elif data.mode == "Play":
+        if event.keysym == "c":
+            data.mode = "Compose"
 
 def timerFired(data):
-    pass
+    if data.mode == "Play":
+        # for every note in staff[], play the note
+        pass
 
 def redrawAll(canvas, data):
     canvas.create_rectangle(0,0,data.width,data.height, fill = "cornsilk", width = 0)
