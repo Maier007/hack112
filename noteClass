@@ -50,8 +50,8 @@ class EighthNote(Note):
     duration = Note.fullNoteDuration/8
     
 class Rest(Note):
-    def __init__(self, pitch=midi.C_5):
-        super().__init__(self,pitch)
+    def __init__(self, pitch=midi.C_5, dot=False):
+        super().__init__(self,pitch,dot)
         self.loudness = 0
         
 class FullRest(Rest):
