@@ -19,6 +19,8 @@ class Note(object):
         self.pitch = p
     def getDuration(self):
         return self.duration
+    def getImage(self):
+        return self.image
 
 """
 pattern = midi.Pattern()
