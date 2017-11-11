@@ -43,8 +43,15 @@ def keyPressed(event, data):
 
 def timerFired(data):
     if data.mode == "Play":
-        # for every note in staff[], play the note
-        pass
+        for n in staff:
+            pattern = midi.Pattern()
+            track = midi.Track()
+            pattern.append(track)
+            eot = midi.EndOfTrackEvent(tick=1)
+            track.append(eot)
+            midi.write_midifile("testNoteClass.mid", pattern)
+            
+            n.playNote(track)
 
 def redrawAll(canvas, data):
     canvas.create_rectangle(0,0,data.width,data.height, fill = "cornsilk", width = 0)
