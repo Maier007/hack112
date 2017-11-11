@@ -1,5 +1,5 @@
 class Note(object):
-    def __init__(self, duration, pitch="C5", image):
+    def __init__(self, duration, image, pitch="C5"):
         self.duration = duration
         self.pitch = pitch
         self.image = image
