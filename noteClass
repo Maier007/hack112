@@ -1,15 +1,31 @@
+import midi
+
 class Note(object):
     def __init__(self, duration, image, pitch="C5"):
         self.duration = duration
         self.pitch = pitch
         self.image = image
-    def playNote(self):
-        pass
+        self.loudness = 100
+    def playNote(self, track):
         # play audio file *pitch* for self.duration time
-    # getters and setters
-    def getPitch(self):
-        return self.pitch
-    def setPitch(self, p):
-        self.pitch = p
-    def getDuration(self):
-        return self.duration
+        on = midi.NoteOnEvent(tick=0, velocity=self.loudness, pitch=self.pitch)
+        track.append(on)
+        off = midi.NoteOffEvent(tick=self.duration, pitch=self.pitch)
+        track.append(off)
+
+"""
+pattern = midi.Pattern()
+track = midi.Track()
+pattern.append(track)
+noteList = []
+noteList.append(Note(200,0,midi.C_5))
+noteList.append(Note(200,0,midi.D_5))
+noteList.append(Note(200,0,midi.E_5))
+noteList.append(Note(200,0,midi.F_5))
+noteList.append(Note(200,0,midi.G_5))
+for note in noteList:
+    note.playNote(track)
+eot = midi.EndOfTrackEvent(tick=1)
+track.append(eot)
+midi.write_midifile("testNoteClass.mid", pattern)
+"""
