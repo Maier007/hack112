@@ -39,6 +39,7 @@ def clickPad(event,data):
         return
     if isinstance(KEY[index], Note):
         data.currNote = KEY[index]
+        return True
     else:
         if KEY[index] == '.':
             data.isDot = not data.isDot
@@ -49,4 +50,5 @@ def clickPad(event,data):
         elif KEY[index] == 'Natural':
             data.noteSign = 0
     print(KEY[index])
+    return False
         
