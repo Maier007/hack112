@@ -4,16 +4,17 @@ import math
 from noteClass import *
 
 def init(data):
-    #drawing things
+    # drawing pad
+    data.psize = 30
+    data.px = data.width - data.psize
+    data.py = 20
+    
+    #drawing staff
     data.staffStartHeight = 60
     data.staffSpaceLine = 20
     data.staffSpace = 200
     data.staffXStart = 10
-    data.staffXEnd = data.width-10
-    
-    # drawing pad
-    data.px = data.width * (3/4)
-    data.py = 20
+    data.staffXEnd = data.width - data.psize - 10
     
     #data on notes
     data.staff = []     # regular 1D list
