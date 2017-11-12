@@ -29,6 +29,9 @@ class Note(object):
 
     def __repr__(self):
         return str((self.pitch,type(self)))
+    
+    def getDuration(self):
+        return self.duration
 
 
 class WholeNote(Note):
