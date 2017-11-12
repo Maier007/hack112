@@ -35,10 +35,10 @@ def clickPad(event,data):
     col = (event.x-data.px)//CELLSIZE
     row = (event.y-data.py)//CELLSIZE
     if col > (COLS-1) or row > (ROWS-1):
-        return
-    index = row*COLS+col
+        return None
+    index = int(row*COLS+col)
     if index > (NUMCELL-1):
-        return
+        return None
     if KEY[index] == '.':
         data.isDot = not data.isDot
     elif KEY[index] == 'Sharp':
