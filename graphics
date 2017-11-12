@@ -11,6 +11,10 @@ def init(data):
     data.staffXStart = 10
     data.staffXEnd = data.width-10
     
+    # drawing pad
+    data.px = data.width * (3/4)
+    data.py = 20
+    
     #data on notes
     data.staff = []     # ragged 2D list
     data.pitches = pitchesSetup()
