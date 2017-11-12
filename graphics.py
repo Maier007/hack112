@@ -26,6 +26,7 @@ def init(data):
     data.pitches = pitchesSetup()
     data.noteSign = 0
     data.nextNote = 0
+    data.isDot = False
     data.noteMenu = noteMenuSetup()
     data.currNote = -1
     data.mode = "Compose"
