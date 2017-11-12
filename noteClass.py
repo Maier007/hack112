@@ -10,6 +10,10 @@ class Note(object):
         self.loudness = 80
         self.dot = dot
         self.noteSign = noteSign
+        
+    def __repr__(self):
+        return str((self.pitch,type(self)))
+        
     def playNote(self, track):
         # play audio file *pitch* for self.duration time
         # if the note is dotted, the duration is extended by half
@@ -27,11 +31,12 @@ class Note(object):
             if self.duration == rest.duration:
                 return rest(self.dot)
 
-    def __repr__(self):
-        return str((self.pitch,type(self)))
-    
     def getDuration(self):
-        return self.duration
+        if self.dot:
+            return int(self.duration*1.5)
+        else:
+            return self.duration
+
 
 
 class WholeNote(Note):
