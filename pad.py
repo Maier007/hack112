@@ -1,7 +1,7 @@
 from noteClass import*
 
 KEY = [WholeNote,HalfNote,QuarterNote,EighthNote,WholeRest,HalfRest,QuarterRest,EighthRest,'.','Sharp','Flat','Natural']
-CELLSIZE = 30
+CELLSIZE = 40
 NUMCELL = len(KEY)
 COLS = 3
 ROWS = NUMCELL//COLS+min(NUMCELL%COLS,1) #Round up
@@ -37,9 +37,9 @@ def clickPad(event,data):
     if col > COLS or row > ROWS:
         return
     index = row*COLS+col
-    if index > NUMCELL:
+    if index > (NUMCELL-1):
         return
-
+    print(index)
     if KEY[index] == '.':
         data.isDot = not data.isDot
     elif KEY[index] == 'Sharp':
