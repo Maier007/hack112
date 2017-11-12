@@ -1,101 +1,66 @@
-import midi
+from noteClass import*
+from PIL import ImageTk, Image
 
-#SPECIFY WHICHEVER NOTE (duration) YOU WANT
-#DO NOT USE THE *NOTE* CLASS ALONE
-class Note(object):
-    fullNoteDuration = 500
-    def __init__(self, pitch=midi.C_5,dot=False,noteSign=0):
-        self.pitch = pitch
-        #self.image = image
-        self.loudness = 80
-        self.dot = dot
-        self.noteSign = noteSign
+KEY = [WholeNote,HalfNote,QuarterNote,EighthNote,WholeRest,HalfRest,QuarterRest,EighthRest,'.','Sharp','Flat','Natural']
+CELLSIZE = 30
+NUMCELL = len(KEY)
+COLS = 1
+ROWS = NUMCELL//COLS+min(NUMCELL%COLS,1) #Round up
+
+def drawPad(canvas,data):
+    startX = data.px
+    startY = data.py
+    endX = data.px+COLS*CELLSIZE
+    endY = data.py+ROWS*CELLSIZE
+    canvas.create_rectangle(startX,startY,endX,endY,fill='cyan')
+    for row in range(1,ROWS):
+        canvas.create_line(startX,startY+row*CELLSIZE,endX,startY+row*CELLSIZE)
+    for col in range(1,COLS):
+        canvas.create_line(startX+col*CELLSIZE,startY,startX+col*CELLSIZE,endY)
+    for i in range(NUMCELL):
+        if ((KEY[i] == data.nextNote) or
+           (data.isDot and KEY[i] == '.') or
+           (data.noteSign == 1 and KEY[i] == 'Sharp') or
+           (data.noteSign == 0 and KEY[i] == 'Natural') or
+           (data.noteSign == -1 and KEY[i] == 'Flat')):
+            row = i//COLS
+            col = i%COLS
+            startX = data.px+col*CELLSIZE
+            startY = data.py+row*CELLSIZE
+            endX = data.px+(col+1)*CELLSIZE
+            endY = data.py+(row+1)*CELLSIZE
+            try:
+                img = Image.open('Images\\'+(KEY[i].image))
+                ph1 = ImageTk.PhotoImage(img)
+                data.im_tk = ImageTk.PhotoImage(img)
+                canvas.create_image(startX+CELLSIZE/2, startY+CELLSIZE/2, im = data.im_tk)
+            except:
+                if (KEY[i] == '.'):
+                    img = Image.open('Images\\dot.png')
+                    ph1 = ImageTk.PhotoImage(img)
+                    data.im_tk = ImageTk.PhotoImage(img)
+                    canvas.create_image(startX+CELLSIZE/2, startY+CELLSIZE/2, im = data.im_tk)
+            canvas.create_rectangle(startX,startY,endX,endY,fill='pink')
+
+
+def clickPad(event,data):
+    col = (event.x-data.px)//CELLSIZE
+    row = (event.y-data.py)//CELLSIZE
+    if col > (COLS-1) or row > (ROWS-1) or col < 0 or row < 0:
+        return
+    index = int(row*COLS+col)
+    if index > (NUMCELL-1):
+        return
+    if KEY[index] == '.':
+        data.isDot = not data.isDot
+    elif KEY[index] == 'Sharp':
+        data.noteSign = 1
+    elif KEY[index] == 'Flat':
+        data.noteSign = -1
+    elif KEY[index] == 'Natural':
+        data.noteSign = 0
+    elif issubclass(KEY[index], Note):
+        data.nextNote = KEY[index]
+        return True
+    return False
         
-    def __repr__(self):
-        return str((self.pitch,type(self)))
-        
-    def playNote(self, track):
-        # play audio file *pitch* for self.duration time
-        # if the note is dotted, the duration is extended by half
-        if self.dot:
-            duration = int(self.duration*1.5)
-        else:
-            duration = self.duration
-        on = midi.NoteOnEvent(tick=0, velocity=self.loudness, pitch=self.pitch)
-        track.append(on)
-        off = midi.NoteOffEvent(tick=duration, pitch=self.pitch)
-        track.append(off)
-
-    def getRest(self):
-        for rest in Rests:
-            if self.duration == rest.duration:
-                return rest(self.dot)
-
-    def getDuration(self):
-        if self.dot:
-            return int(self.duration*1.5)
-        else:
-            return self.duration
-
-
-
-class WholeNote(Note):
-    duration = Note.fullNoteDuration
-    image = 'noteWhole_pad.png'
-
-class HalfNote(Note):
-    duration = Note.fullNoteDuration//2
-    image = 'noteHalfUp_pad.png'
-    
-class QuarterNote(Note):
-    duration = Note.fullNoteDuration//4
-    image = 'noteQuarterUp_pad.png'
-    
-class EighthNote(Note):
-    duration = Note.fullNoteDuration//8
-    image = 'noteEighthUp_pad.png'
-
-    
-class Rest(Note):
-    def __init__(self, dot=False):
-        super().__init__(midi.C_5,dot)
-        self.loudness = 0
-
-class WholeRest(Rest):
-    duration = Note.fullNoteDuration
-    image = 'restWhole_pad.png'
-
-class HalfRest(Rest):
-    duration = Note.fullNoteDuration//2
-    image = 'restHalf_pad.png'
-    
-class QuarterRest(Rest):
-    duration = Note.fullNoteDuration//4
-    image = 'restQuarter_pad.png'
-    
-class EighthRest(Rest):
-    duration = Note.fullNoteDuration//8
-    image = 'restEighth_pad.png'
-
-Rests = [WholeRest,HalfRest,QuarterRest,EighthRest]
-
-#Test, this generates a harmonic minor scale
-"""
-pattern = midi.Pattern()
-track = midi.Track()
-pattern.append(track)
-noteList = []
-noteList.append(QuarterNote(midi.C_5+1))
-noteList.append(QuarterNote(midi.D_5+1))
-noteList.append(QuarterNote(midi.Eb_5+1))
-noteList.append(QuarterNote(midi.F_5+1))
-noteList.append(QuarterNote(midi.G_5+1))
-noteList.append(QuarterNote(midi.Ab_5+1))
-noteList.append(QuarterNote(midi.B_5+1))
-noteList.append(WholeNote(midi.C_6+1))
-for note in noteList:
-    note.playNote(track)
-eot = midi.EndOfTrackEvent(tick=1)
-track.append(eot)
-midi.write_midifile("testNoteClass.mid", pattern)
-"""
