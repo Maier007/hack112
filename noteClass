@@ -3,12 +3,13 @@ import midi
 #SPECIFY WHICHEVER NOTE (duration) YOU WANT
 #DO NOT USE THE *NOTE* CLASS ALONE
 class Note(object):
-    fullNoteDuration = 500 
-    def __init__(self, pitch=midi.C_5,dot=False):
+    fullNoteDuration = 500
+    def __init__(self, pitch=midi.C_5,dot=False,noteSign=0):
         self.pitch = pitch
         #self.image = image
         self.loudness = 80
         self.dot = dot
+        self.noteSign = noteSign
     def playNote(self, track):
         # play audio file *pitch* for self.duration time
         # if the note is dotted, the duration is extended by half
