@@ -38,7 +38,7 @@ def clickPad(event,data):
     if index > NUMCELL:
         return
     if isinstance(KEY[index], Note):
-        data.currNote = KEY[index]
+        data.nextNote = KEY[index]
         return True
     else:
         if KEY[index] == '.':
