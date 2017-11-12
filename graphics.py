@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import math
 from noteClass import *
+from pad import *
 
 def init(data):
     # drawing pad
