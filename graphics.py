@@ -23,6 +23,8 @@ def init(data):
     #data on notes
     data.staff = []     # regular 1D list
     data.pitches = pitchesSetup()
+    data.noteSign = 0
+    data.nextNote = 0
     data.noteMenu = noteMenuSetup()
     data.currNote = -1
     data.mode = "Compose"
