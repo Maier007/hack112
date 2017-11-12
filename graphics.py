@@ -14,7 +14,11 @@ def init(data):
     data.staffSpaceLine = 20
     data.staffSpace = 200
     data.staffXStart = 10
-    data.staffXEnd = data.width - data.psize - 10
+    data.staffXEnd = data.width-10
+    data.trebleWidth = 47
+    
+    data.measureDur = 500
+    data.measureWidth = (data.width - 20 - data.trebleWidth)//3
     
     #data on notes
     data.staff = []     # regular 1D list
@@ -148,24 +152,60 @@ def drawStaff(canvas, data, numStaff):
     data.im_tk = ImageTk.PhotoImage(treble)
     
     for j in range(numStaff):
+        #Measure lines
         beginningLineYStart = data.staffStartHeight + j*data.staffSpace
         beginningLineYEnd = beginningLineYStart + 4*data.staffSpaceLine
+        middleMeasureLineX = (data.staffXEnd-data.staffXStart-treble.width)//3
         canvas.create_line(data.staffXStart, beginningLineYStart, data.staffXStart, beginningLineYEnd, width = 5)
         canvas.create_line(data.staffXEnd, beginningLineYStart, data.staffXEnd, beginningLineYEnd, width = 5)
         
+        for i in range (0, 2):
+            x = data.staffXStart + treble.width + middleMeasureLineX * (i+1)
+            canvas.create_line(x, beginningLineYStart, x, beginningLineYEnd, width = 2)
+        
+        #treble clef
         trebleX = treble.width/2 + data.staffXStart
         trebleY = data.staffStartHeight + j*data.staffSpace +\
                                     2.5 * data.staffSpaceLine
         canvas.create_image(trebleX, trebleY, im = data.im_tk)
         
+        #staff lines
         for i in range(5):
             y = data.staffStartHeight + (i*data.staffSpaceLine) + \
                                         (j*data.staffSpace)
             canvas.create_line(data.staffXStart, y, data.staffXEnd,y, width = 3)
 
+def drawNote(canvas, data, note, location):
+    
+    pass
+
+def drawNotes(canvas, data):
+    startMeasure = 0
+    beat = 0
+    measure = 0
+    line = 0
+    coordinate = [beat, measure, line]
+    nextCoord = [0,0,0]
+    for index in range(len(data.staff)):
+        #update time
+        coordinate = nextCoord
+        
+        nextCoord[0] += data.staff[index].duration
+        #new measure
+        if nextCoord[0] >= data.measureDur:
+            nextCoord[1] += 1
+            nextCoord[0] -= 500 #assume they count correctly
+        
+        if nextCoord[1] > 2:  #new line
+            nextCoord[2] += 1
+            nextCoord[1] = 0
+        print(nextCoord)
+        drawNote(canvas, data, index, coordinate)
+
 def redrawAll(canvas, data):
     canvas.create_rectangle(0,0,data.width,data.height, fill = "white", width = 0)
     drawStaff(canvas, data, 2)
+    drawNotes(canvas, data)
 
 
 
