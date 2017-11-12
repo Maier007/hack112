@@ -17,9 +17,11 @@ def drawPad(canvas,data):
     for col in range(1,COLS):
         canvas.create_line(startX+col*CELLSIZE,startY,startX+col*CELLSIZE,endY)
     for i in range(NUMCELL):
-        if ((isinstance(KEY[i],Note) and KEY[i] == data.currNote) or
-           (data.isDot and KEY[i] == '.')):
-           
+        if ((KEY[i] == data.nextNote) or
+           (data.isDot and KEY[i] == '.') or
+           (data.noteSign == 1 and KEY[i] == 'Sharp') or
+           (data.noteSign == 0 and KEY[i] == 'Natural') or
+           (data.noteSign == -1 and KEY[i] == 'Flat')):
             row = i//COLS
             col = i%COLS
             startX = data.px+col*CELLSIZE
@@ -37,18 +39,17 @@ def clickPad(event,data):
     index = row*COLS+col
     if index > NUMCELL:
         return
-    if isinstance(KEY[index], Note):
+
+    if KEY[index] == '.':
+        data.isDot = not data.isDot
+    elif KEY[index] == 'Sharp':
+        data.noteSign = 1
+    elif KEY[index] == 'Flat':
+        data.noteSign = -1
+    elif KEY[index] == 'Natural':
+        data.noteSign = 0
+    elif issubclass(KEY[index], Note):
         data.nextNote = KEY[index]
         return True
-    else:
-        if KEY[index] == '.':
-            data.isDot = not data.isDot
-        elif KEY[index] == 'Sharp':
-            data.noteSign = 1
-        elif KEY[index] == 'Flat':
-            data.noteSign = -1
-        elif KEY[index] == 'Natural':
-            data.noteSign = 0
-    print(KEY[index])
     return False
         
