@@ -29,18 +29,27 @@ def drawPad(canvas,data):
             startY = data.py+row*CELLSIZE
             endX = data.px+(col+1)*CELLSIZE
             endY = data.py+(row+1)*CELLSIZE
-            try:
-                img = Image.open('Images\\'+(KEY[i].image))
+            #try:
+            canvas.create_rectangle(startX,startY,endX,endY,fill='pink')
+        for i in range(NUMCELL):
+            row = i//COLS
+            col = i%COLS
+            startX = data.px+col*CELLSIZE
+            startY = data.py+row*CELLSIZE
+            endX = data.px+(col+1)*CELLSIZE
+            endY = data.py+(row+1)*CELLSIZE
+            if i<8:
+                img = Image.open('Images/'+(KEY[i].image))
+                ph1 = ImageTk.PhotoImage(img)
+                data.imgList.append(ImageTk.PhotoImage(img))
+                canvas.create_image(startX+CELLSIZE/2, startY+CELLSIZE/2, im = data.imgList[-1])
+            #except:
+            #else:
+            if (KEY[i] == '.'):
+                img = Image.open('Images\\dot.png')
                 ph1 = ImageTk.PhotoImage(img)
                 data.im_tk = ImageTk.PhotoImage(img)
                 canvas.create_image(startX+CELLSIZE/2, startY+CELLSIZE/2, im = data.im_tk)
-            except:
-                if (KEY[i] == '.'):
-                    img = Image.open('Images\\dot.png')
-                    ph1 = ImageTk.PhotoImage(img)
-                    data.im_tk = ImageTk.PhotoImage(img)
-                    canvas.create_image(startX+CELLSIZE/2, startY+CELLSIZE/2, im = data.im_tk)
-            canvas.create_rectangle(startX,startY,endX,endY,fill='pink')
 
 
 def clickPad(event,data):
