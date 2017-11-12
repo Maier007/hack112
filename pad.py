@@ -1,7 +1,8 @@
 from noteClass import*
+from PIL import ImageTk, Image
 
 KEY = [WholeNote,HalfNote,QuarterNote,EighthNote,WholeRest,HalfRest,QuarterRest,EighthRest,'.','Sharp','Flat','Natural']
-CELLSIZE = 40
+CELLSIZE = 30
 NUMCELL = len(KEY)
 COLS = 1
 ROWS = NUMCELL//COLS+min(NUMCELL%COLS,1) #Round up
@@ -28,6 +29,14 @@ def drawPad(canvas,data):
             startY = data.py+row*CELLSIZE
             endX = data.px+(col+1)*CELLSIZE
             endY = data.py+(row+1)*CELLSIZE
+            #try:
+            if i < 8:
+                img = Image.open('Images\\'+(KEY[i].image))
+                ph1 = ImageTk.PhotoImage(img)
+                data.im_tk = ImageTk.PhotoImage(img)
+                canvas.create_image(startX+CELLSIZE/2, startY+CELLSIZE/2, im = data.im_tk)
+            #except:
+                #pass
             canvas.create_rectangle(startX,startY,endX,endY,fill='pink')
 
 
