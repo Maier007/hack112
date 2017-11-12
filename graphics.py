@@ -208,7 +208,7 @@ def redrawAll(canvas, data):
     canvas.create_rectangle(0,0,data.width,data.height, fill = "white", width = 0)
     drawStaff(canvas, data, 2)
     drawNotes(canvas, data)
-
+    drawPad(canvas,data)
 
 
 ##########################################################
