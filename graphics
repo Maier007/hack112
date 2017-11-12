@@ -16,10 +16,10 @@ def init(data):
     data.py = 20
     
     #data on notes
-    data.staff = []     # ragged 2D list
+    data.staff = []     # regular 1D list
     data.pitches = pitchesSetup()
     data.noteMenu = noteMenuSetup()
-    data.currNote = (-1,-1)  # index of currently selected note in staff
+    data.currNote = -1
     data.mode = "Compose"
 
 def mousePressed(event, data): #make a new note
@@ -40,9 +40,9 @@ def keyPressed(event, data):#change pitch or mode
             pitch = data.pitches[pitch]
             note.pitch(pitch)
         elif event.keysym == "Left":
-            data.currNote = getNextNote(data, -1)
+            data.currNote -= 1
         elif event.keysym == "Right":
-            data.currNote = getNextNote(data, 1)
+            data.currNote += 1
         elif event.keysym == "Delete":
             dur = data.currNote.getDuration()
             pitch = 0
