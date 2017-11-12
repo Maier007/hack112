@@ -23,8 +23,9 @@ def init(data):
     data.mode = "Compose"
 
 def mousePressed(event, data): #make a new note
-    newNote = HalfNote()
-    data.staff.append(newNote)
+    if clickPad(event, data) == True:
+        newNote = data.nextNote()
+        data.staff.append(newNote)
 
 def keyPressed(event, data):#change pitch or mode
     if data.mode == "Compose":
