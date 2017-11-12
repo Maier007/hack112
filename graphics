@@ -1,18 +1,28 @@
 from tkinter import *
-import math, noteClass
+from PIL import ImageTk, Image
+import math
+from noteClass import *
 
 def init(data):
+    #drawing things
+    data.staffStartHeight = 60
+    data.staffSpaceLine = 20
+    data.staffSpace = 200
+    data.staffXStart = 10
+    data.staffXEnd = data.width-10
+    
+    #data on notes
     data.staff = []     # ragged 2D list
     data.pitches = pitchesSetup()
     data.noteMenu = noteMenuSetup()
     data.currNote = (-1,-1)  # index of currently selected note in staff
     data.mode = "Compose"
 
-def mousePressed(event, data):
-    pass
+def mousePressed(event, data): #make a new note
+    newNote = HalfNote()
+    data.staff.append(newNote)
 
-
-def keyPressed(event, data):
+def keyPressed(event, data):#change pitch or mode
     if data.mode == "Compose":
         note = data.staff[data.currNote[0]][data.currNote[1]]
         if event.keysym == "Up":
@@ -53,12 +63,8 @@ def timerFired(data):
             
             n.playNote(track)
 
-def redrawAll(canvas, data):
-    canvas.create_rectangle(0,0,data.width,data.height, fill = "cornsilk", width = 0)
-    drawStaff(canvas, data, 2)
 
-
-### HELPER FUNCTIONS ###
+### DATA FUNCTIONS ###
 
 def pitchesSetup():
     pitches = []
@@ -120,14 +126,6 @@ def getNewImage(dur, pitch):
         # get image of note with appropriate duration
     return 42
 
-
-def drawStaff(canvas, data, x):
-    for j in range(x):
-        for i in range(5):
-            y = 40 + (i*20) + (j*200)
-            canvas.create_line(10, y, data.width-10, y, width = 5)
-
-
 def isClicked(a,b,x,y,r):
     # a,b: mouse coordinates. x,y: center of the item. r: radius/size of item
     distX = (a,x)**2
@@ -135,7 +133,34 @@ def isClicked(a,b,x,y,r):
     dist = (distX + distY)**0.5
     if dist <= radius:  return True
     else:   return False
+
+### DRAW FUNCTIONS ###
+
+def drawStaff(canvas, data, numStaff):
+    treble = Image.open("smallTreble.png")
+    ph1 = ImageTk.PhotoImage(treble)
+    data.im_tk = ImageTk.PhotoImage(treble)
     
+    for j in range(numStaff):
+        beginningLineYStart = data.staffStartHeight + j*data.staffSpace
+        beginningLineYEnd = beginningLineYStart + 4*data.staffSpaceLine
+        canvas.create_line(data.staffXStart, beginningLineYStart, data.staffXStart, beginningLineYEnd, width = 5)
+        canvas.create_line(data.staffXEnd, beginningLineYStart, data.staffXEnd, beginningLineYEnd, width = 5)
+        
+        trebleX = treble.width/2 + data.staffXStart
+        trebleY = data.staffStartHeight + j*data.staffSpace +\
+                                    2.5 * data.staffSpaceLine
+        canvas.create_image(trebleX, trebleY, im = data.im_tk)
+        
+        for i in range(5):
+            y = data.staffStartHeight + (i*data.staffSpaceLine) + \
+                                        (j*data.staffSpace)
+            canvas.create_line(data.staffXStart, y, data.staffXEnd,y, width = 3)
+
+def redrawAll(canvas, data):
+    canvas.create_rectangle(0,0,data.width,data.height, fill = "white", width = 0)
+    drawStaff(canvas, data, 2)
+
 
 
 ##########################################################
