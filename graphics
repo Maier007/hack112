@@ -141,7 +141,7 @@ def isClicked(a,b,x,y,r):
 ### DRAW FUNCTIONS ###
 
 def drawStaff(canvas, data, numStaff):
-    treble = Image.open("smallTreble.png")
+    treble = Image.open("Images/smallTreble.png")
     ph1 = ImageTk.PhotoImage(treble)
     data.im_tk = ImageTk.PhotoImage(treble)
     
