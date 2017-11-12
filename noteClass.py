@@ -41,15 +41,19 @@ class Note(object):
 
 class WholeNote(Note):
     duration = Note.fullNoteDuration
+    image = 'noteWhole.png'
 
 class HalfNote(Note):
     duration = Note.fullNoteDuration//2
+    image = 'noteHalf.png'
     
 class QuarterNote(Note):
     duration = Note.fullNoteDuration//4
+    image = 'noteQuarter.png'
     
 class EighthNote(Note):
     duration = Note.fullNoteDuration//8
+    image = 'noteEighth.png'
 
     
 class Rest(Note):
@@ -59,19 +63,19 @@ class Rest(Note):
 
 class WholeRest(Rest):
     duration = Note.fullNoteDuration
-    image = 'whole_rest.png'
+    image = 'restWhole.png'
 
 class HalfRest(Rest):
     duration = Note.fullNoteDuration//2
-    image = 'half_rest.png'
+    image = 'restHalf.png'
     
 class QuarterRest(Rest):
     duration = Note.fullNoteDuration//4
-    image = 'quarter_rest.png'
+    image = 'restQuarter.png'
     
 class EighthRest(Rest):
     duration = Note.fullNoteDuration//8
-    image = 'eighth_rest.png'
+    image = 'restEighth.png'
 
 Rests = [WholeRest,HalfRest,QuarterRest,EighthRest]
 
